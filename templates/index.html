@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JMeter Analysis - Upload</title>
+</head>
+<body>
+    <h1>Upload JMeter Data File or Connect to JMeter</h1>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" id="jmeterFile" name="file" />
+        <button type="submit">Upload</button>
+    </form>
+
+    <button id="connectJMeter">Connect to JMeter</button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
+    <script>
+        const socket = io.connect('http://localhost:5000');
+
+        document.getElementById('uploadForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const file = document.getElementById('jmeterFile').files[0];
+            socket.emit('upload_file', file);
+        });
+
+        document.getElementById('connectJMeter').addEventListener('click', function() {
+            socket.emit('connect_jmeter');
+        });
+
+        socket.on('jmeter_data', function(data) {
+            console.log('Received JMeter data:', data);
+        });
+    </script>
+</body>
+</html>
